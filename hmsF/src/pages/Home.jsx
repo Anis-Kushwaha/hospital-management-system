@@ -178,21 +178,21 @@ function Home() {
             {/* Stats */}
             <div className="hero-stats" id="hero-stats">
               <div className="stat-item">
-                <span className="stat-number">
+                <span className="stat-number1">
                   <Counter from={0} to={50} duration={1} />+
                 </span>
                 <span className="stat-label">Expert Doctors</span>
               </div>
 
               <div className="stat-item">
-                <span className="stat-number">
+                <span className="stat-number1">
                 <Counter from={0} to={1000} duration={1.5} />+
                 </span>
                 <span className="stat-label">Happy Patients</span>
               </div>
 
               <div className="stat-item">
-                <span className="stat-number">
+                <span className="stat-number1">
                   <Counter from={0} to={24} duration={0.7} />/7
                 </span>
                 <span className="stat-label">Emergency Service</span>
@@ -243,7 +243,7 @@ function Home() {
       {/* ========== SERVICES SECTION ========== */}
       <section className="services-section" id="services">
         <div className="section-container">
-          <motion.div className="section-header" 
+          <motion.div className="section-header1" 
           initial={{opacity:0 ,y:30}}
           whileInView={{opacity:1,y:0}}
           viewport={{ once: true, margin: "-100px" }}
@@ -279,7 +279,7 @@ function Home() {
       {/* ========== Our Specialist Doctors Section========== */}
       <section className="Specialist-section" id="doctors">
         <div className="Specialist-container">
-          <motion.div className="section-header" 
+          <motion.div className="section-header1" 
           initial={{opacity:0 ,y:30}}
           whileInView={{opacity:1,y:0}}
           viewport={{ once: true, margin: "-100px" }}
@@ -308,6 +308,7 @@ function Home() {
 
       {/* ========== patient satisfaction SECTION ========== */}
       <motion.section
+      className="patient-satisfaction"
         initial={{opacity:0 ,y:30}}
         whileInView={{opacity:1,y:0}}
         viewport={{ once: true, margin: "-100px" }}

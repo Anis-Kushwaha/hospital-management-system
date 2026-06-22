@@ -21,7 +21,7 @@ function PatientSatisfactionSection() {
 
   return (
       <div className="result-container" id="happy-pateints">
-        <div className="section-header">
+        <div className="section-header1">
           <span className="section-subtitle">Our Team</span>
           <h2 className="section-title">
             We are Creating the {' '}
