@@ -179,14 +179,14 @@ function Home() {
             <div className="hero-stats" id="hero-stats">
               <div className="stat-item">
                 <span className="stat-number1">
-                  <Counter from={0} to={50} duration={1} />+
+                  <Counter from={0} to={50} duration={0.7} />+
                 </span>
                 <span className="stat-label">Expert Doctors</span>
               </div>
 
               <div className="stat-item">
                 <span className="stat-number1">
-                <Counter from={0} to={1000} duration={1.5} />+
+                <Counter from={0} to={1000} duration={0.7} />+
                 </span>
                 <span className="stat-label">Happy Patients</span>
               </div>

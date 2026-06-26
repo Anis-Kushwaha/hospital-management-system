@@ -2,16 +2,14 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaMoon, FaSun } from "react-icons/fa";
-import Notification from "../components/Notification";
+import Notification from "../components/Doctor/Notification";
 import '../DoctorDashboard.css';
-
-function DoctorDashboard(){
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
-  const [isOnline, setIsOnline] = useState(false);
-  const navigate = useNavigate();
-  const [notification, setNotification] = useState(false);
+import AppointmentsSection from "../components/Doctor/AppointmentsSection";
+import Emergency from "../components/Doctor/Emergency";
+import StatusGrid from "../components/Doctor/StatusGrid";
+import QuickAction from "../components/Doctor/QuickAction";
+import ScheduleSection from "../components/Doctor/ScheduleSection";
+import PatientsSection from "../components/Doctor/PatientsSection";
 
   // Dummy doctor data
   const doctorData = {
@@ -175,6 +173,14 @@ function DoctorDashboard(){
     'Emergency Alerts',
   ];
 
+function DoctorDashboard(){
+  const [activeMenu, setActiveMenu] = useState('Dashboard');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
+  const navigate = useNavigate();
+  const [notification, setNotification] = useState(false);
+
   return (
     <>
       <div className={`doctor-dashboard ${darkMode ? "dark-mode" : ""}`}>
@@ -218,7 +224,7 @@ function DoctorDashboard(){
           {/* Header */}
           <header className="dashboard-header">
             <div className="header-left">
-              <h1 className="dashboard-title">Dashboard</h1>
+              <h1 className="dashboard-title">{activeMenu}</h1>
               <div className="search-bar">
                 <input
                   type="text"
@@ -248,132 +254,26 @@ function DoctorDashboard(){
           </header>
 
           {/* Statistics Cards */}
-          <section className="stats-section">
-            <div className="stats-grid">
-              {stats.map((stat, index) => (
-                <div key={index} className="stat-card">
-                  <div className="stat-icon">{stat.icon}</div>
-                  <div className="stat-content">
-                    <h3 className="stat-number">{stat.number}</h3>
-                    <p className="stat-label">{stat.label}</p>
-                    <span className={`growth-indicator ${stat.growth.startsWith('+') ? 'positive' : 'negative'}`}>
-                      {stat.growth}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <StatusGrid stats={stats} />
 
           {/* Main Grid */}
           <div className="dashboard-grid">
             {/* Left Column */}
             <div className="left-column">
               {/* Today's Appointments */}
-              <section className="appointments-section">
-                <div className="section-header">
-                  <h2>Today's Appointments</h2>
-                  <a href="#" className="view-all">View All</a>
-                </div>
-                <div className="table-wrapper">
-                  <table className="appointment-table">
-                    <thead>
-                      <tr>
-                        <th>Patient Name</th>
-                        <th>Age</th>
-                        <th>Department</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {appointments.map((appt) => (
-                        <tr key={appt.id}>
-                          <td className="patient-name-cell">{appt.name}</td>
-                          <td>{appt.age}</td>
-                          <td>{appt.department}</td>
-                          <td>{appt.time}</td>
-                          <td>
-                            <span className={`status-badge ${getStatusClass(appt.status)}`}>
-                              {appt.status}
-                            </span>
-                          </td>
-                          <td className="action-buttons">
-                            <button className="btn-small btn-view">View Details</button>
-                            <button className="btn-small btn-consult" disabled={!isOnline}>Start Consultation</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </section>
+              <AppointmentsSection appointments={appointments} isOnline={isOnline} getStatusClass={getStatusClass} />
 
               {/* Emergency Alerts */}
-              <section className="emergency-section">
-                <div className="section-header">
-                  <h2>Emergency Alerts</h2>
-                </div>
-                <div className="emergency-grid">
-                  {emergencyAlerts.map((alert) => (
-                    <div key={alert.id} className={`emergency-card ${getSeverityClass(alert.severity)}`}>
-                      <div className="alert-header">
-                        <h4>{alert.name}</h4>
-                        <span className="alert-time">{alert.time}</span>
-                      </div>
-                      <p className="alert-type">{alert.type}</p>
-                      <div className="alert-footer">
-                        <span className="severity-label">{alert.severity}</span>
-                        <button className="btn-respond">Respond Now</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
+              <Emergency   emergencyAlerts={emergencyAlerts} getSeverityClass={getSeverityClass}/>
             </div>
 
             {/* Right Column */}
             <div className="right-column">
               {/* Patient Records */}
-              <section className="patients-section">
-                <div className="section-header">
-                  <h2>Patient Records</h2>
-                  <a href="#" className="view-all">View All</a>
-                </div>
-                <div className="patients-container">
-                  {patients.map((patient) => (
-                    <div key={patient.id} className="patient-card">
-                      <div className="patient-image">{patient.image}</div>
-                      <div className="patient-info">
-                        <h4 className="patient-name">{patient.name}</h4>
-                        <p className="patient-detail">Age: {patient.age}</p>
-                        <p className="patient-detail">Blood: {patient.bloodGroup}</p>
-                        <p className="patient-detail">Last Visit: {patient.lastVisit}</p>
-                      </div>
-                      <button className="btn-view-record">View Record</button>
-                    </div>
-                  ))}
-                </div>
-              </section>
+              <PatientsSection patients = {patients} />
 
               {/* Schedule */}
-              <section className="schedule-section">
-                <div className="section-header">
-                  <h2>Daily Schedule</h2>
-                </div>
-                <div className="schedule-list">
-                  {schedule.map((slot, index) => (
-                    <div
-                      key={index}
-                      className={`schedule-item ${slot.status === 'Busy' ? 'busy' : slot.status === 'Lunch Break' ? 'break' : 'available'}`}
-                    >
-                      <span className="time">{slot.time}</span>
-                      <span className="slot-status">{slot.status}</span>
-                    </div>
-                  ))}
-                </div>
-              </section>
+              <ScheduleSection schedule={schedule} />
 
               {/* Notifications Panel */}
 
@@ -381,16 +281,7 @@ function DoctorDashboard(){
           </div>
 
           {/* Quick Actions */}
-          <section className="quick-actions-section">
-            <h2>Quick Actions</h2>
-            <div className="quick-actions">
-              <button className="action-btn">💊 Add Prescription</button>
-              <button className="action-btn">📋 Create Medical Record</button>
-              <button className="action-btn">📊 View Reports</button>
-              <button className="action-btn">📞 Contact Patient</button>
-              <button className="action-btn">🎥 Start Video Consultation</button>
-            </div>
-          </section>
+          <QuickAction/>
         </div>
       </div>
       {notification  && ( <Notification notifications={notifications} onClose={() => setNotification(false)} /> )}

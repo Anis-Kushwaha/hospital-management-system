@@ -1,5 +1,5 @@
 import React from "react";
-import '../DoctorDashboard.css';
+import '../../DoctorDashboard.css';
 
 function Notification({ notifications, onClose }){
 
