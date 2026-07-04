@@ -7,6 +7,7 @@ import PrescriptionCard from "../components/Pateint/PrescriptionCard";
 import PaymentCard from "../components/Pateint/PaymentCard";
 import DoctorCard from "../components/Pateint/DoctorCard";
 import HealthInsightsCard from "../components/Pateint/HealthInsightsCard";
+import PateintAI from "../components/Pateint/PatientAI";
 
 // ─── Dummy Data ──────────────────────────────────────────────────────────────
 const PATIENT = {
@@ -126,6 +127,7 @@ function PatientDashboard(){
         <aside className="pd-sidebar">
           <DoctorCard DOCTOR = {DOCTOR} />
           <HealthInsightsCard HEALTH_TIPS = {HEALTH_TIPS} />
+          <PateintAI/>
           <div>if any test is to do then it will appear here</div>
         </aside>
       </div>
