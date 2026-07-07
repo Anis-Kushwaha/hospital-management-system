@@ -3,7 +3,7 @@ import { AlertCircle, CreditCard,  } from 'lucide-react';
 
 function PaymentCard({PAYMENT}) {
   return (
-    <article className="pd-payment-card" aria-label="Outstanding payment">
+    <article className="pd-payment-card" aria-label="Outstanding payment" id="Payment" >
       <div className="pd-pay-header">
         <p className="pd-pay-eyebrow">Outstanding Balance</p>
         <span className="pd-pay-pending" role="status">

@@ -5,7 +5,7 @@ function StatsGrid({totalToday, waitingCount, completedCount, emergencyCount, St
         <>
         <section className="stats-grid">
           <StatCard icon={FiUsers} label="Total Patients Today" value={totalToday} sub="Assigned via auto-triage" tone="primary" />
-          <StatCard icon={FiClock} label="Patients Waiting" value={waitingCount} sub="Currently in queue" tone="warning" />
+          <a href="#patient-queue" ><StatCard icon={FiClock} label="Patients Waiting" value={waitingCount} sub="Currently in queue" tone="warning" /></a>
           <StatCard icon={FiCheckCircle} label="Consultations Completed" value={completedCount} sub={`Out of ${totalToday} total`} tone="success" />
           <StatCard icon={FiAlertTriangle} label="Emergency Cases" value={emergencyCount} sub="Needs immediate attention" tone="danger" />
         </section>

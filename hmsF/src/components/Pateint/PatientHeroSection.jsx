@@ -1,7 +1,15 @@
 import React from "react";
 import { Calendar, CheckCircle, Bell, Phone, CreditCard, Heart } from 'lucide-react';
+import { FiLogOut} from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 function PatientHeroSection({PATIENT, APPOINTMENT}) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <section className="pd-hero" aria-label="Patient overview">
@@ -39,10 +47,10 @@ function PatientHeroSection({PATIENT, APPOINTMENT}) {
                 <Phone size={14} aria-hidden="true" />
                 Call Clinic
               </button>
-              <button className="pd-hero-btn pd-hero-btn-ghost" aria-label="Pay bill">
+              <a href="#Payment" className="pd-hero-btn pd-hero-btn-ghost" aria-label="Pay bill">
                 <CreditCard size={14} aria-hidden="true" />
                 Pay Bill
-              </button>
+              </a>
             </div>
           </div>
   
@@ -68,6 +76,10 @@ function PatientHeroSection({PATIENT, APPOINTMENT}) {
                 <span className="pd-vital-label">Age</span>
               </div>
             </div>
+              <button className="logout-btn" onClick={handleLogout}>
+                <FiLogOut />
+                <span>Logout</span>
+              </button>
           </div>
         </div>
       </section>

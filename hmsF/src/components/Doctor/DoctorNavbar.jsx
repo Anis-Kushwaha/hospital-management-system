@@ -1,7 +1,14 @@
 import {FiBell, FiLogOut} from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 function DoctorNavbar({VitalLine, isAvailable, setIsAvailable, NOTIFICATIONS, unreadNotifications, showNotifications, setShowNotifications, notifRef, DOCTOR, showToast}){
-    return (
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/");
+  };
+
+  return (
         <>
       <header className="dd-navbar">
         <div className="dd-navbar__brand">
@@ -55,7 +62,7 @@ function DoctorNavbar({VitalLine, isAvailable, setIsAvailable, NOTIFICATIONS, un
             </span>
           </div>
  
-          <button className="logout-btn" onClick={() => showToast("Logged out (UI demo only).")}>
+          <button className="logout-btn" onClick={handleLogout}>
             <FiLogOut />
             <span>Logout</span>
           </button>

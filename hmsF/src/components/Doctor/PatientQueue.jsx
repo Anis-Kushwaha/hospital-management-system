@@ -20,7 +20,7 @@ function PatientQueue({searchTerm, filteredPatients, PriorityBadge, openPatient,
               </div>
             </div>
  
-            <div className="queue-table-wrap">
+            <div className="queue-table-wrap" id="patient-queue" >
               <table className="queue-table">
                 <thead>
                   <tr>
