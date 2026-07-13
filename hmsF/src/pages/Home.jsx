@@ -109,7 +109,8 @@ function Counter({ from = 0, to, duration = 2 }) {
 
 function Home() {
   const [activeModal, setActiveModal] = useState(null);
- const [appoint, setAppoint] = useState(false);
+  const [appoint, setAppoint] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
@@ -123,14 +124,14 @@ function Home() {
           </a>
 
           {/* Navigation Links */}
-          <ul className="nav-links" id="nav-links">
-            <li><a href="#hero" className="nav-link">Home</a></li>
-            <li><a href="#services" className="nav-link">Services</a></li>
-            <li><a href="#about" className="nav-link">About</a></li>
-            <li><a href="#doctors" className="nav-link">Doctors</a></li>
-            <li><a href="#appointment" className="nav-link">Appointment</a></li>
-            <li><a href="#contact" className="nav-link">Contact</a></li>
-          </ul>
+            <ul className={`nav-links ${menuOpen ? "active" : ""}`}>
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#doctors">Doctors</a></li>
+              <li><a href="#appointment">Appointment</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
 
           {/* Login Buttons Container */}
           <div className="login-buttons-container" id="login-buttons-container">
@@ -148,7 +149,8 @@ function Home() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button className="mobile-menu-toggle" id="mobile-menu-toggle">
+          <button className="mobile-menu-toggle" id="mobile-menu-toggle" onClick={() => setMenuOpen(!menuOpen)} >
+            <ul className={`nav-links ${menuOpen ? "active" : ""}`}></ul>
             <span className="hamburger-line"></span>
             <span className="hamburger-line"></span>
             <span className="hamburger-line"></span>
@@ -200,40 +202,60 @@ function Home() {
             </div>
           </div>
 
-          <div className="hero-image-container" id="hero-image-container">
-            <div className="hero-image-wrapper">
-              
-              {/* FRONT SIDE */}
-              <div className="hero-front">
-                <div className="hero-image-placeholder">
-                  <span className="hero-icon">🏩</span>
-                </div>
+          <div className="hero-visual">
+            <div className="phone-glow"></div>
 
-                {/* Floating Cards */}
-                <div className="floating-card card-1">
-                  <span className="card-icon">❤️</span>
-                  <span className="card-text">100% Success Rate</span>
-                </div>
-
-                <div className="floating-card card-2">
-                  <span className="card-icon">⭐</span>
-                  <span className="card-text">4.9 Rating</span>
-                </div>
+            {/* Phone Mockup */}
+            <div className="phone-mockup">
+              <div className="phone-notch"></div>
+              <div className="phone-header">
+                <span>MediCare Plus</span>
               </div>
 
-              {/* BACK SIDE */}
-              <div className="hero-back">
-                <div className="hero-image-placeholder">
-                  <div className="back-content">
-                    <h3> 1000+ Lives Changed. Countless Smiles Restored ❤️</h3>
-                    <p>1000+ patients trusted us in their most critical moments.</p>
-                    <p>More than treatment-we help people reclaim their lives.</p>
-                    <h2>Trusted care..Proven outcomes..✨</h2>
-                    <a href="#happy-pateints">See our Work &rarr;</a>
-                  </div>
+              <div className="phone-content">
+                <div className="phone-card">
+                  <span>📅</span>
+                  <p>Book Appointment</p>
+                </div>
+
+                <div className="phone-card">
+                  <span>🤖</span>
+                  <p>AI Assistant</p>
+                </div>
+
+                <div className="phone-card">
+                  <span>📄</span>
+                  <p>Medical Reports</p>
+                </div>
+
+                <div className="phone-card">
+                  <span>💳</span>
+                  <p>Bill Payments</p>
                 </div>
               </div>
+            </div>
 
+            {/* Floating Cards */}
+            <div className="orbit-card card-ai">
+              🤖 AI Assistant
+            </div>
+
+            <div className="orbit-card card-doctor">
+              👨‍⚕️ 50+ Doctors
+            </div>
+
+            <div className="orbit-card card-appointment">
+              📅 Instant Booking
+            </div>
+                <div className="orbit-card notification-card">
+                  ✓ Appointment Confirmed
+                </div>
+            <div className="orbit-card card-report">
+              📊 Health Reports
+            </div>
+
+            <div className="orbit-card card-payment">
+              💳 Secure Payments
             </div>
           </div>
           
