@@ -345,7 +345,7 @@ textarea {
 
 /* ========== HERO SECTION ========== */
 .hero-section {
-  padding-top: 1.5rem;
+  padding-top: 2rem;
   padding-bottom: 5rem;
   background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
   overflow: hidden;
@@ -439,9 +439,9 @@ textarea {
   background:
     radial-gradient(
       circle,
-      rgba(59,130,246,0.35),
-      rgba(139,92,246,0.25),
-      transparent 70%
+      rgba(80, 147, 253, 0.35),
+      rgba(169, 132, 255, 0.416),
+      transparent 60%
     );
 
   filter: blur(80px);
@@ -455,7 +455,7 @@ textarea {
   }
 
   50% {
-    transform: scale(1.15);
+    transform: scale(1.1);
   }
 }
 
@@ -490,8 +490,8 @@ textarea {
 
   transform: translateX(-50%);
 
-  width: 110px;
-  height: 24px;
+  width: 80px;
+  height: 20px;
 
   background: #585858;
 
@@ -574,13 +574,13 @@ textarea {
 
   border-radius: 999px;
 
-  background: rgba(255,255,255,0.65);
+  background: rgba(255, 255, 255, 0.181);
 
   backdrop-filter: blur(18px);
 
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(163, 163, 163, 0.3);
 
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.244);
 
   font-weight: 600;
 
@@ -632,7 +632,7 @@ textarea {
   }
 
   50% {
-    transform: translateX(-50%) translateY(-12px);
+    transform: translateX(-50%) translateY(-8px);
   }
 }
 
@@ -646,7 +646,7 @@ textarea {
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-8px);
   }
 }
 

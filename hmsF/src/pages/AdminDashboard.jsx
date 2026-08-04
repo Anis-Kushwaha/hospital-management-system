@@ -1,22 +1,14 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { FiLogOut} from "react-icons/fi";
-
-function AdminDashboard(){
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate("/");
-  };
-    return(
-        <>
-        <h1>Admin ka dashboard</h1>
-        <button className="logout-btn" onClick={handleLogout}>
-            <FiLogOut />
-            <span>Logout</span>
-        </button>
-        </>
-    );
+import "../admindashboard.css";
+ 
+function AdminDashboard() {
+ 
+  return (
+    <>
+      <div className="admin-container">
+        <h1 className="tempo">Admin Dashboard will be added soon...</h1>
+      </div>
+    </>
+  );
 }
-
+ 
 export default AdminDashboard;

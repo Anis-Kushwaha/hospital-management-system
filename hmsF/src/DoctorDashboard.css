@@ -402,6 +402,7 @@
   background: linear-gradient(135deg, #fff5f5, #fff);
   border: 1px solid #f7cdd1;
   border-radius: var(--radius-lg);
+  width: fit-content;
   padding: 20px 22px 22px;
   box-shadow: 0 0 0 1px rgba(226, 55, 68, 0.04), 0 18px 40px -12px rgba(226, 55, 68, 0.25);
 }
@@ -906,18 +907,18 @@
   color: var(--text-faint);
 }
  
-.ai-card {
+.ai-card1 {
   background: linear-gradient(160deg, #0f2f52, #123c6d 60%, #0e9488);
   color: #fff;
   border: none;
 }
-.ai-card .panel-card__header {
+.ai-card1 .panel-card__header {
   color: #fff;
 }
-.ai-card .panel-card__header svg {
+.ai-card1 .panel-card__header svg {
   color: #7fe9db;
 }
-.ai-card__badge {
+.ai-card1__badge {
   margin-left: auto;
   font-size: 0.62rem;
   font-weight: 700;
@@ -927,13 +928,13 @@
   padding: 3px 9px;
   border-radius: var(--radius-pill);
 }
-.ai-card__desc {
+.ai-card1__desc {
   font-size: 0.82rem;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.82);
   margin: 0 0 14px;
 }
-.ai-card__list {
+.ai-card1__list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -941,14 +942,14 @@
   flex-direction: column;
   gap: 10px;
 }
-.ai-card__list li {
+.ai-card1__list li {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.92);
 }
-.ai-card__list svg {
+.ai-card1__list svg {
   color: #7fe9db;
   flex: 0 0 auto;
 }

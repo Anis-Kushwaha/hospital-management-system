@@ -129,7 +129,7 @@ function Home() {
               <li><a href="#services">Services</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#doctors">Doctors</a></li>
-              <li><a href="#appointment">Appointment</a></li>
+              <li><a href="#appointment" onClick={() => setAppoint(true)} >Appointment</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
 
@@ -213,7 +213,7 @@ function Home() {
               </div>
 
               <div className="phone-content">
-                <div className="phone-card">
+                <div className="phone-card" onClick={() => setAppoint(true)} >
                   <span>📅</span>
                   <p>Book Appointment</p>
                 </div>
