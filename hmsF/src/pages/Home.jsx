@@ -6,6 +6,7 @@ import ServiceCard from "../components/ServiceCard";
 import SpecialistCard from "../components/SpecialistCard";
 import PatientSatisfactionSection from "../components/PatientSatisfactionSection";
 import Appointment from "../components/Appointment";
+import Gallery from "../components/Gallery";
 
 const servicesData = [
     {
@@ -70,6 +71,24 @@ const specialistsData = [
   { id: 4, icon: "❤️", iconClass: "Doctor4", name: "Anis Kushwaha", description: "Comprehensive heart care including diagnosis, treatment, and rehabilitation services.", link: "#hero" },
   { id: 5, icon: "🚑", iconClass: "Doctor5", name: "Anis Kushwaha", description: "A specialized medical doctor focused on diagnosing, treating, and preventing diseases of the cardiovascular system...", link: "#hero" },
   { id: 6, icon: "❤️", iconClass: "Doctor2", name: "Anis Kushwaha", description: "A specialized medical doctor focused on diagnosing, treating, and preventing diseases of the cardiovascular system...", link: "#hero" }
+];
+
+const images = [
+  "/img1.jpg",
+  "/img2.jpg",
+  "/img3.jpg",
+  "/img4.jpg",
+  "/img5.jpg",
+  "/img6.jpg",
+  "/img7.jpg",
+  "/img8.jpg",
+  "/img9.jpg",
+  "/img10.jpg",
+  "/img11.jpg",
+  "/img12.jpg",
+  "/img13.jpg",
+  "/img14.jpg",
+  "/img15.jpg",
 ];
 
 const containerVariants = {
@@ -338,6 +357,7 @@ function Home() {
         >
         <PatientSatisfactionSection/>
       </motion.section>
+      <Gallery images = {images} ></Gallery>
 
       {/* ========== ABOUT SECTION ========== */}
       <motion.section className="about-section" id="about"

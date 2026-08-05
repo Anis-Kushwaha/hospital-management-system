@@ -22,8 +22,8 @@ const DOCTOR = {
  
 const INITIAL_PATIENTS = [
   {
-    token: "T-020",
-    name: "Vikram Desai",
+    token: "T-012",
+    name: "Dr. Banner",
     age: 72,
     gender: "Male",
     contact: "+91 90000 11223",
@@ -36,8 +36,8 @@ const INITIAL_PATIENTS = [
     reports: ["ECG_Emergency_04Jul.pdf"],
   },
   {
-    token: "T-014",
-    name: "Rajesh Verma",
+    token: "T-013",
+    name: "Mr. Hawkeye",
     age: 54,
     gender: "Male",
     contact: "+91 98765 43210",
@@ -50,8 +50,8 @@ const INITIAL_PATIENTS = [
     reports: ["ECG_Report_04Jul.pdf", "Blood_Panel_03Jul.pdf"],
   },
   {
-    token: "T-203",
-    name: "Lalit bais",
+    token: "T-014",
+    name: "Mr. Nick Fury",
     age: 19,
     gender: "Male",
     contact: "+91 98765 43210",
@@ -78,8 +78,8 @@ const INITIAL_PATIENTS = [
     reports: ["ECG_Report_04Jul.pdf", "Blood_Panel_03Jul.pdf"],
   },
   {
-    token: "T-015",
-    name: "Sunita Rao",
+    token: "T-05",
+    name: "Mrs. Caption India",
     age: 61,
     gender: "Female",
     contact: "+91 91234 56780",
@@ -92,8 +92,8 @@ const INITIAL_PATIENTS = [
     reports: ["Holter_Monitor_June.pdf"],
   },
   {
-    token: "T-018",
-    name: "Arjun Singh",
+    token: "T-06",
+    name: "Iron Man",
     age: 67,
     gender: "Male",
     contact: "+91 99887 66554",
@@ -106,8 +106,8 @@ const INITIAL_PATIENTS = [
     reports: ["Discharge_Summary.pdf", "Echo_Report.pdf"],
   },
   {
-    token: "T-016",
-    name: "Karan Mehta",
+    token: "T-07",
+    name: "Mr. Thor",
     age: 45,
     gender: "Male",
     contact: "+91 93456 12378",
@@ -120,8 +120,8 @@ const INITIAL_PATIENTS = [
     reports: ["Lipid_Profile_May.pdf"],
   },
   {
-    token: "T-017",
-    name: "Priya Nair",
+    token: "T-09",
+    name: "Black Widow",
     age: 38,
     gender: "Female",
     contact: "+91 90011 22334",
@@ -134,8 +134,8 @@ const INITIAL_PATIENTS = [
     reports: [],
   },
   {
-    token: "T-019",
-    name: "Meera Iyer",
+    token: "T-010",
+    name: "Mr. Spider Man",
     age: 29,
     gender: "Female",
     contact: "+91 98123 45677",
@@ -148,8 +148,8 @@ const INITIAL_PATIENTS = [
     reports: [],
   },
   {
-    token: "T-013",
-    name: "Anjali Gupta",
+    token: "T-011",
+    name: "Mrs. MJ(Marry Jain)",
     age: 50,
     gender: "Female",
     contact: "+91 97654 32109",
