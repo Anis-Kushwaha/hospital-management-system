@@ -794,28 +794,25 @@ textarea {
 }
 
 /*===================Doctor section=======================*/
-
-.Specialist{
-  display: flex;
-  flex-wrap: nowrap; 
-  gap: 30px;
-  padding: 30px; 
-  overflow: hidden;
-  animation: moveSpecialist 20s linear infinite;
-  
+.swiper-wrapper {
+  transition-timing-function: linear !important;
 }
+
 
 .Specialist-section{
   background-color: white;
 }
 
-.Specialist:hover {
-  animation-play-state: paused;
-}
-.Specialist .specialist-card,
-.Specialist .Specialist-card {
-  flex: 0 0 320px; /* Forces every card to be exactly 320px wide */
-  height: 100%; /* Ensures they are all the same height */
+.Specialist-card{
+  width: 320px;
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+} 
+
+.swiper-slide{
+  display: flex;
+  justify-content: center;
 }
 
 .Specialist-container{
@@ -827,24 +824,7 @@ textarea {
   background: var(--white);
   padding: 2rem;
   border-radius: var(--radius-lg);
-  transition: transform 0.5s ease;
-}
 
-.Specialist-card:hover{
-  box-shadow: var(--shadow-xl);
-  border-color: transparent;
-  transform: scale(1.15);
-  z-index: 1;
-  position: relative;
-}
-
-@keyframes moveSpecialist{
-  from{
-    margin-left: 5%;
-  }
-  to{
-    margin-left: -100%;
-  }
 }
 
 .Specialist-icon-wrapper{

@@ -7,6 +7,10 @@ import SpecialistCard from "../components/SpecialistCard";
 import PatientSatisfactionSection from "../components/PatientSatisfactionSection";
 import Appointment from "../components/Appointment";
 import Gallery from "../components/Gallery";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
+
 
 const servicesData = [
     {
@@ -334,16 +338,31 @@ function Home() {
             </p>
           </motion.div>
           {/* Services Grid */}
-          <motion.div className="Specialist" id="Specialist"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            <Swiper
+              className="Specialist"
+              id="Specialist"
+              modules={[Autoplay]}
+              loop={true}
+              speed={6000}
+              spaceBetween={30}
+              autoplay={{
+                delay:1,
+                disableOnInteraction: false,
+                pauseOnMouseEnter:true,
+              }}
+              breakpoints={{
+                320: {slidesPerView: 1,},
+                768: {slidesPerView: 2,},
+                1024: {slidesPerView: 3,},
+                1280: {slidesPerView: 5,},
+              }}
             >
             {specialistsData.map((doctor)=>(
-              <SpecialistCard key={doctor.id} doctor={doctor} />
+            <SwiperSlide key={doctor.id}>
+              <SpecialistCard doctor={doctor} />
+            </SwiperSlide>
             ))}
-          </motion.div>
+          </Swiper>
         </div>
       </section>
 
