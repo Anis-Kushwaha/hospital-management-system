@@ -148,12 +148,12 @@ function Home() {
 
           {/* Navigation Links */}
             <ul className={`nav-links ${menuOpen ? "active" : ""}`}>
-              <li><a href="#hero">Home</a></li>
-              <li><a href="#services">Services</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#doctors">Doctors</a></li>
-              <li><a href="#appointment" onClick={() => setAppoint(true)} >Appointment</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="#hero" className="nav-link">Home</a></li>
+              <li><a href="#services" className="nav-link">Services</a></li>
+              <li><a href="#about" className="nav-link">About</a></li>
+              <li><a href="#doctors" className="nav-link">Doctors</a></li>
+              <li><a href="#appointment" className="nav-link" onClick={() => setAppoint(true)} >Appointment</a></li>
+              <li><a href="#contact" className="nav-link">Contact</a></li>
             </ul>
 
           {/* Login Buttons Container */}
@@ -385,7 +385,7 @@ function Home() {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 , ease:"easeOut"}}
         >
-        <div className="section-container">
+        <div className="section-container1">
           <div className="about-grid">
             <img src="/Hospital.png" alt="hospital" className="hospital-img"/>
             <div className="about-content" id="about-content">

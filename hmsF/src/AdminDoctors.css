@@ -1,0 +1,153 @@
+.admin-doctors-container {
+    width: 100%;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* Header */
+
+.admin-doctors-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 20px;
+}
+
+.admin-doctors-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.admin-doctors-header p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.doctor-count {
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 9px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Table Container */
+
+.doctors-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* Table */
+
+.doctors-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+/* Table Header */
+
+.doctors-table thead {
+    background: #f8fafc;
+}
+
+.doctors-table th {
+    padding: 16px 18px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Table Body */
+
+.doctors-table td {
+    padding: 17px 18px;
+    font-size: 14px;
+    color: #475569;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.doctors-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.doctors-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.doctors-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Doctor Name */
+
+.doctor-name {
+    font-weight: 600;
+    color: #1e293b !important;
+}
+
+/* Status */
+
+.doctor-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.doctor-status.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.doctor-status.inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Empty Table */
+
+.no-doctors {
+    text-align: center !important;
+    padding: 45px !important;
+    color: #94a3b8 !important;
+    font-size: 15px !important;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+    .admin-doctors-container {
+        padding: 18px;
+    }
+
+    .admin-doctors-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-doctors-header h2 {
+        font-size: 24px;
+    }
+
+    .doctor-count {
+        font-size: 13px;
+    }
+}

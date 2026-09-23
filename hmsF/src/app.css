@@ -101,6 +101,14 @@ textarea {
   color:azure;
 }
 
+.section-container1 {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  color:azure;
+}
+
+
 .section-header1 {
   text-align: center;
   margin-bottom: 3rem;
@@ -110,7 +118,7 @@ textarea {
   display: inline-block;
   color: var(--primary-color);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 17px;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 0.5rem;
@@ -121,7 +129,7 @@ textarea {
 }
 
 .section-title {
-  font-size: 2.5rem;
+  font-size: 50px;
   font-weight: 700;
   color: var(--text-color);
   margin-bottom: 1rem;
@@ -192,6 +200,12 @@ textarea {
 }
 
 /* ========== NAVBAR STYLES ========== */
+
+.logo-text{
+  font-family: 'Space Grotesk',sans-serif;
+  font-weight: 800;
+}
+
 .navbar {
   position: sticky;
   top: 12px;
@@ -256,29 +270,27 @@ textarea {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.7rem;
 }
 
 .nav-link {
+  font-family: 'Sacramento', cursive;
+  display: inline-block;
   color: var(--text-color);
   font-weight: 500;
-  transition: color var(--transition-fast);
   position: relative;
+  transition: color var(--transition-fast);
 }
 
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: -4px;
   left: 0;
+  bottom: -4px;
   width: 0;
   height: 2px;
-  background: var(--primary-color);
-  transition: width var(--transition-normal) transform 0.3s ease;
-}
-
-.nav-link:hover {
-  color: rgb(43, 144, 237);
+  background: grey;
+  transition: width 0.3s ease;
 }
 
 .nav-link:hover::after {
@@ -344,9 +356,10 @@ textarea {
 }
 
 /* ========== HERO SECTION ========== */
+
 .hero-section {
   padding-top: 2rem;
-  padding-bottom: 5rem;
+  padding-bottom: 5.5rem;
   background: linear-gradient(135deg, var(--off-white) 0%, var(--white) 100%);
   overflow: hidden;
 }
@@ -366,7 +379,8 @@ textarea {
 }
 
 .hero-heading {
-  font-size: 3.5rem;
+  font-family: 'Montserrat',sans-serif;
+  font-size: 3.75rem;
   font-weight: 800;
   line-height: 1.1;
   color: var(--text-color);
@@ -382,6 +396,8 @@ textarea {
 }
 
 .hero-tagline {
+  font-family: 'Parisienne', cursive;
+  font-weight: 400;
   font-size: 1.25rem;
   color: var(--text-light);
   margin-bottom: 2rem;
@@ -988,7 +1004,7 @@ textarea {
     to right,
     rgb(255, 255, 255) 0%,
     rgba(248, 249, 250, 0.984) 30%,
-    rgba(248, 249, 250, 0.516) 60%,
+    rgba(255, 255, 255, 0.652) 60%,
     rgba(248,249,250,0) 100%
   );
 
@@ -1295,6 +1311,104 @@ textarea {
   gap: 0.4rem;
   font-size: 0.95rem;
   cursor: pointer;
+}
+
+.appointment-success {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 32px 28px;
+  text-align: center;
+
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.appointment-success h1 {
+  margin-bottom: 8px;
+
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.appointment-success > p:first-of-type {
+  margin-top: 20px;
+  margin-bottom: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.appointment-success h2 {
+  display: inline-block;
+
+  margin: 8px 0 24px;
+  padding: 14px 28px;
+
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 2px;
+
+  color: #2563eb;
+  background: #eff6ff;
+
+  border: 2px dashed #60a5fa;
+  border-radius: 12px;
+}
+
+.appointment-success p {
+  margin: 10px 0;
+
+  font-size: 15px;
+  color: #4b5563;
+}
+
+.appointment-success .btn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px 20px;
+
+  border: none;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.appointment-success .btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.appointment-success .btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 480px) {
+  .appointment-success {
+    padding: 25px 18px;
+  }
+
+  .appointment-success h1 {
+    font-size: 23px;
+  }
+
+  .appointment-success h2 {
+    font-size: 50px;
+    color: #000;
+  }
 }
 
 /* ========== FOOTER SECTION ========== */
