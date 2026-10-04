@@ -151,3 +151,48 @@
         font-size: 13px;
     }
 }
+
+.admin-doctors-header {
+  opacity: 0;
+  animation: doctorsHeaderFade 0.7s ease forwards;
+}
+
+.doctors-table-wrapper {
+  opacity: 0;
+  animation: doctorsHeaderFade 0.8s ease 0.15s forwards;
+}
+
+.doctor-count {
+  opacity: 0;
+  animation: doctorsHeaderFade 0.7s ease 0.15s forwards;
+}
+
+@keyframes doctorsHeaderFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-row {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: doctorFadeUp 0.7s ease forwards;
+}
+
+@keyframes doctorFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

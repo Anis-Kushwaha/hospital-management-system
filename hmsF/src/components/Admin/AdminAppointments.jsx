@@ -3,8 +3,10 @@ import { createPortal } from "react-dom";
 
 const AdminAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [assigningDoctorId, setAssigningDoctorId] = useState(null);
   const [openStatusMenu, setOpenStatusMenu] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
 
@@ -15,7 +17,31 @@ const AdminAppointments = () => {
 
   useEffect(() => {
     fetchAppointments();
+    fetchDoctors();
   }, []);
+
+  // =========================
+  // FETCH DOCTORS
+  // =========================
+
+  const fetchDoctors = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/admin/doctors");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch doctors");
+      }
+
+      const data = await response.json();
+      setDoctors(data);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    }
+  };
+
+  // =========================
+  // FETCH APPOINTMENTS
+  // =========================
 
   const fetchAppointments = async () => {
     try {
@@ -52,7 +78,8 @@ const AdminAppointments = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update appointment status");
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to update appointment status");
       }
 
       const updatedAppointment = await response.json();
@@ -66,7 +93,7 @@ const AdminAppointments = () => {
       setOpenStatusMenu(null);
     } catch (error) {
       console.error("Status update failed:", error);
-      alert("Unable to update appointment status.");
+      alert(error.message || "Unable to update appointment status.");
     } finally {
       setUpdatingId(null);
     }
@@ -152,6 +179,7 @@ const AdminAppointments = () => {
   const renderStatusActions = (appointment) => {
     const isOpen = openStatusMenu === appointment.id;
     const isUpdating = updatingId === appointment.id;
+    const isCompleted = appointment.status === "COMPLETED";
 
     return (
       <div className="status-action-wrapper">
@@ -161,14 +189,19 @@ const AdminAppointments = () => {
 
         <button
           className="status-change-btn"
-          disabled={isUpdating}
+          disabled={isUpdating || isCompleted}
           onClick={(event) => toggleStatusMenu(event, appointment.id)}
         >
-          {isUpdating ? "Updating..." : "Change"}
+          {isCompleted
+            ? "Cannot Chnage"
+            : isUpdating
+              ? "Updating..."
+              : "Change"}
         </button>
 
         {isOpen &&
           !isUpdating &&
+          !isCompleted &&
           createPortal(
             <div
               className="status-menu"
@@ -184,18 +217,6 @@ const AdminAppointments = () => {
                 >
                   <span>🕒</span>
                   Waiting
-                </button>
-              )}
-
-              {appointment.status !== "DOCTOR_ASSIGNED" && (
-                <button
-                  className="status-option assigned-option"
-                  onClick={() =>
-                    updateStatus(appointment.id, "DOCTOR_ASSIGNED")
-                  }
-                >
-                  <span>👨‍⚕️</span>
-                  Assigned
                 </button>
               )}
 
@@ -235,6 +256,83 @@ const AdminAppointments = () => {
     );
   };
 
+  // =========================
+  // ASSIGN / REMOVE DOCTOR
+  // =========================
+
+  const handleDoctorChange = (appointment, value) => {
+    if (value === "REMOVE") {
+      removeDoctor(appointment.id);
+      return;
+    }
+
+    if (value) {
+      assignDoctor(appointment.id, value);
+    }
+  };
+
+  const assignDoctor = async (appointmentId, doctorId) => {
+    try {
+      setAssigningDoctorId(appointmentId);
+
+      const response = await fetch(
+        `http://localhost:8080/api/appointments/admin/${appointmentId}/assign-doctor/${doctorId}`,
+        {
+          method: "PUT",
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to assign doctor");
+      }
+
+      const updatedAppointment = await response.json();
+
+      setAppointments((previousAppointments) =>
+        previousAppointments.map((appointment) =>
+          appointment.id === appointmentId ? updatedAppointment : appointment,
+        ),
+      );
+    } catch (error) {
+      console.error("Doctor assignment failed:", error);
+      alert(error.message || "Unable to assign doctor.");
+    } finally {
+      setAssigningDoctorId(null);
+    }
+  };
+
+  const removeDoctor = async (appointmentId) => {
+    try {
+      setAssigningDoctorId(appointmentId);
+
+      const response = await fetch(
+        `http://localhost:8080/api/appointments/admin/${appointmentId}/remove-doctor`,
+        {
+          method: "PUT",
+        },
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to remove doctor");
+      }
+
+      const updatedAppointment = await response.json();
+
+      setAppointments((previousAppointments) =>
+        previousAppointments.map((appointment) =>
+          appointment.id === appointmentId ? updatedAppointment : appointment,
+        ),
+      );
+    } catch (error) {
+      console.error("Remove doctor failed:", error);
+      alert(error.message || "Unable to remove doctor.");
+    } finally {
+      setAssigningDoctorId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="admin-appointments">
@@ -251,7 +349,13 @@ const AdminAppointments = () => {
           <p>Monitor and manage all hospital appointments</p>
         </div>
 
-        <button className="refresh-btn" onClick={fetchAppointments}>
+        <button
+          className="refresh-btn"
+          onClick={() => {
+            fetchAppointments();
+            fetchDoctors();
+          }}
+        >
           Refresh
         </button>
       </div>
@@ -280,8 +384,14 @@ const AdminAppointments = () => {
                   </td>
                 </tr>
               ) : (
-                appointments.map((appointment) => (
-                  <tr key={appointment.id}>
+                appointments.map((appointment, index) => (
+                  <tr
+                    key={appointment.id}
+                    className="appointment-row"
+                    style={{
+                      animationDelay: `${index * 0.15}s`,
+                    }}
+                  >
                     <td>{appointment.id}</td>
 
                     <td>
@@ -289,17 +399,49 @@ const AdminAppointments = () => {
                     </td>
 
                     <td>{appointment.name}</td>
-
                     <td>{appointment.department}</td>
-
                     <td>{appointment.date}</td>
-
                     <td>{appointment.slot}</td>
 
                     <td>{renderStatusActions(appointment)}</td>
 
                     <td>
-                      {appointment.doctor ? appointment.doctor.name : "N/A"}
+                      {appointment.status === "COMPLETED" ? (
+                        <div className="completed-doctor">
+                          {appointment.doctor?.name || "N/A"}
+                        </div>
+                      ) : (
+                        <select
+                          className="doctor-select"
+                          value={appointment.doctor?.id || ""}
+                          disabled={assigningDoctorId === appointment.id}
+                          onChange={(e) =>
+                            handleDoctorChange(appointment, e.target.value)
+                          }
+                        >
+                          <option value="" disabled>
+                            {assigningDoctorId === appointment.id
+                              ? "Updating..."
+                              : "Select Doctor"}
+                          </option>
+
+                          {doctors
+                            .filter(
+                              (doctor) =>
+                                doctor.active &&
+                                doctor.department === appointment.department,
+                            )
+                            .map((doctor) => (
+                              <option key={doctor.id} value={doctor.id}>
+                                {doctor.name}
+                              </option>
+                            ))}
+
+                          {appointment.doctor && (
+                            <option value="REMOVE">Remove Doctor</option>
+                          )}
+                        </select>
+                      )}
                     </td>
                   </tr>
                 ))

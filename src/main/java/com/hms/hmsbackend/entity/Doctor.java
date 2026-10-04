@@ -2,17 +2,27 @@ package com.hms.hmsbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-
-import javax.lang.model.element.Name;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "doctor ")
+@Table(name = "doctor")
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    @NotBlank(message = "Doctor name is required")
     private String name;
+
+    @Column(nullable = false, unique = true)
+    @Email(
+            regexp = "^[a-zA-Z0-9._%+-]+@medicare\\.hms$",
+            message = "Email must belong to the @medicare.hms domain"
+    )
     private String email;
+
+    @NotBlank(message = "Password is required")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String department;
@@ -20,11 +30,11 @@ public class Doctor {
     private String phone;
     private boolean active = true;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

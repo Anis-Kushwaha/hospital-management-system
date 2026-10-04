@@ -12,13 +12,13 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DoctorService(DoctorRepository doctorRepository,  PasswordEncoder passwordEncoder) {
+    public DoctorService(DoctorRepository doctorRepository, PasswordEncoder passwordEncoder) {
         this.doctorRepository = doctorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Doctor addDoctor (Doctor doctor){
-        if(doctorRepository.existsByEmail(doctor.getEmail())){
+    public Doctor addDoctor(Doctor doctor) {
+        if (doctorRepository.existsByEmail(doctor.getEmail())) {
             throw new RuntimeException("Doctor already exists");
         }
 
@@ -27,7 +27,7 @@ public class DoctorService {
         return doctorRepository.save(doctor);
     }
 
-    public List<Doctor> getAllDoctors(){
+    public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
 }

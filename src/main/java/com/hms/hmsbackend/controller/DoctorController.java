@@ -2,6 +2,7 @@ package com.hms.hmsbackend.controller;
 
 import com.hms.hmsbackend.entity.Doctor;
 import com.hms.hmsbackend.service.DoctorService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class DoctorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addDoctor(@RequestBody Doctor doctor){
+    public ResponseEntity<?> addDoctor(@Valid @RequestBody Doctor doctor) {
         try {
             Doctor savedDoctor = doctorService.addDoctor(doctor);
             return ResponseEntity.ok(savedDoctor);
@@ -29,7 +30,7 @@ public class DoctorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Doctor>> getAllDoctors(){
+    public ResponseEntity<List<Doctor>> getAllDoctors() {
         List<Doctor> doctors = doctorService.getAllDoctors();
         return ResponseEntity.ok(doctors);
     }

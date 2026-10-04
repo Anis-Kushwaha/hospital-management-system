@@ -101,6 +101,7 @@ const AddDoctor = () => {
             <label>Password</label>
 
             <input
+              type="text"
               name="password"
               value={doctor.password}
               onChange={handleChange}

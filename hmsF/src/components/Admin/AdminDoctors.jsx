@@ -50,8 +50,14 @@ const AdminDoctors = () => {
 
           <tbody>
             {doctors.length > 0 ? (
-              doctors.map((doctor) => (
-                <tr key={doctor.id}>
+              doctors.map((doctor, index) => (
+                <tr
+                  key={doctor.id}
+                  className="doctor-row"
+                  style={{
+                    animationDelay: `${index * 0.15}s`,
+                  }}
+                >
                   <td>#{doctor.id}</td>
 
                   <td className="doctor-name">{doctor.name}</td>

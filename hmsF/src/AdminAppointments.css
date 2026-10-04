@@ -271,3 +271,43 @@
 .status-menu .cancel-action {
     color: #dc2626;
 }
+
+.appointments-header {
+  opacity: 0;
+  animation: appointmentHeaderFade 0.7s ease forwards;
+}
+
+.appointments-card {
+  opacity: 0;
+  animation: appointmentHeaderFade 0.8s ease 0.15s forwards;
+}
+
+@keyframes appointmentHeaderFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.appointment-row {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: appointmentFadeUp 1s ease forwards;
+}
+
+@keyframes appointmentFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
