@@ -18,7 +18,6 @@ const users = {
 
 function LoginModal({ isOpen, role, onClose }) {
   const navigate = useNavigate();
-  const [loginError, setLoginError] = useState("");
   //Temporary for simple auth-verfication
   const onSubmit = async (data) => {
     // =========================
@@ -269,7 +268,6 @@ function LoginModal({ isOpen, role, onClose }) {
           </form>
         </div>
       </div>
-      {loginError && <div className="login-error-toast">{loginError}</div>}
     </>
   );
 }

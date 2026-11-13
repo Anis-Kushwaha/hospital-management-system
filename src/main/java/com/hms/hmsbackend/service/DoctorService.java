@@ -1,5 +1,7 @@
 package com.hms.hmsbackend.service;
 
+import com.hms.hmsbackend.entity.Appointment;
+import com.hms.hmsbackend.entity.AppointmentStatus;
 import com.hms.hmsbackend.entity.Doctor;
 import com.hms.hmsbackend.repository.DoctorRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;

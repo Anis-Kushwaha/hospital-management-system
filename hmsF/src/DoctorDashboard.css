@@ -1393,4 +1393,24 @@
     width: 260px;
   }
 }
- 
+ .appointment-date-filter {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+
+.appointment-date-filter label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.appointment-date-filter input {
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+}
+
+.appointment-date-filter input:focus {
+  border-color: #2563eb;
+}

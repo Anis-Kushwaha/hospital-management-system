@@ -8,7 +8,7 @@ public class DoctorLoginRequest {
     @NotBlank(message = "Email is required")
     @Email(
             regexp = "^[a-zA-Z0-9._%+-]+@medicare\\.hms$",
-            message = "Email Does Not Belongs to Official domain Please Use Your Official Email"
+            message = "Email must belong to the @medicare.hms domain"
     )
     private String email;
 

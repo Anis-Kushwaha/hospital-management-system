@@ -60,4 +60,14 @@ public class AppointmentController {
         }
     }
 
+//    @PutMapping("/admin/{appointmentId}/assign-doctor/{doctorId}")
+//    public ResponseEntity<?> patientCunsultation (@PathVariable Long appointmentId, @PathVariable Long doctorId) {
+//        try {
+//            Appointment updatedAppointment = appointmentService.assignDoctor(appointmentId, doctorId);
+//            return ResponseEntity.ok(updatedAppointment);
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
+
 }

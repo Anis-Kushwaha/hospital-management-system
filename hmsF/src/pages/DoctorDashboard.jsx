@@ -14,12 +14,13 @@ import DoctorNavbar from "../components/Doctor/DoctorNavbar";
 import WelcomeSection from "../components/Doctor/WelcomeSection";
 import StatsGrid from "../components/Doctor/StatsGrid";
 import EmergencySection from "../components/Doctor/EmergencySection";
-import PatientQueue from "../components/Doctor/PatientQueue";
 import SidePanel from "../components/Doctor/SidePanel";
 import PatientDrawer from "../components/Doctor/PatientDrawer";
 import Toast from "../components/Doctor/Toast";
+import AssignedAppointments from "../components/Doctor/AssignedAppointments";
 
-// Frontend configuration. These are not patient/doctor records.
+const API_URL = "http://localhost:8080/api";
+
 const AVAILABLE_TESTS = [
   { id: "blood", label: "Blood Test", icon: FiDroplet },
   { id: "xray", label: "X-Ray", icon: FiImage },
@@ -121,27 +122,30 @@ function DoctorDashboard() {
   const [isAvailable, setIsAvailable] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // Real appointments will be loaded from the backend in the next step.
   const [patients, setPatients] = useState([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(true);
 
-  // Keep empty until the notification backend is implemented.
   const [notifications] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedToken, setSelectedToken] = useState(null);
   const [consultationData, setConsultationData] = useState({});
+
+  const [consultationLoading, setConsultationLoading] = useState(false);
+  const [consultationSaving, setConsultationSaving] = useState(false);
+
   const [medForm, setMedForm] = useState({
     name: "",
     dosage: "",
     duration: "",
     instructions: "",
   });
+
   const [toast, setToast] = useState(null);
 
   const toastTimer = useRef(null);
   const notifRef = useRef(null);
 
-  // Load the doctor returned by the login API.
+  // Load logged-in doctor.
   useEffect(() => {
     const storedDoctor = localStorage.getItem("doctor");
 
@@ -165,7 +169,217 @@ function DoctorDashboard() {
     }
   }, [navigate]);
 
-  // Close notifications when the user clicks outside the dropdown.
+  function showToast(message) {
+    setToast(message);
+
+    clearTimeout(toastTimer.current);
+
+    toastTimer.current = setTimeout(() => {
+      setToast(null);
+    }, 2600);
+  }
+
+  // Fetch appointments assigned to the logged-in doctor.
+  useEffect(() => {
+    if (!doctor?.id) return;
+
+    let cancelled = false;
+
+    async function fetchAssignedAppointments() {
+      try {
+        setAppointmentsLoading(true);
+
+        const response = await fetch(
+          `${API_URL}/doctors/${doctor.id}/appointments`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch assigned appointments");
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setPatients(Array.isArray(data) ? data : []);
+        }
+      } catch (error) {
+        console.error("Assigned appointment fetch error:", error);
+
+        if (!cancelled) {
+          setPatients([]);
+          showToast("Unable to load assigned appointments.");
+        }
+      } finally {
+        if (!cancelled) {
+          setAppointmentsLoading(false);
+        }
+      }
+    }
+
+    fetchAssignedAppointments();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [doctor?.id]);
+
+  // Update appointment status through the backend.
+  async function handleAppointmentStatusChange(appointmentId, newStatus) {
+    if (!doctor?.id) {
+      showToast("Doctor information is not available.");
+      return null;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_URL}/doctors/${doctor.id}/appointments/${appointmentId}/status?status=${newStatus}`,
+        { method: "PUT" },
+      );
+
+      if (!response.ok) {
+        const message = await response.text();
+        showToast(message || "Unable to update appointment status.");
+        return null;
+      }
+
+      const updatedAppointment = await response.json();
+
+      setPatients((previous) =>
+        previous.map((appointment) =>
+          appointment.id === appointmentId ? updatedAppointment : appointment,
+        ),
+      );
+
+      if (newStatus === "IN_CONSULTATION") {
+        showToast("Consultation started.");
+      } else if (newStatus === "COMPLETED") {
+        showToast("Consultation completed.");
+      }
+
+      return updatedAppointment;
+    } catch (error) {
+      console.error("Appointment status update error:", error);
+      showToast("Unable to connect to server.");
+      return null;
+    }
+  }
+
+  // Load the saved consultation from the backend.
+
+  // Load the saved consultation from the backend.
+  async function fetchConsultation(patient) {
+    if (!doctor?.id || !patient?.id) return false;
+
+    setConsultationLoading(true);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/doctors/${doctor.id}/appointments/${patient.id}/consultation`,
+      );
+
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Unable to load consultation.");
+      }
+
+      const data = await response.json();
+
+      const appointmentStatus = normalizeStatus(patient.status);
+
+      const consultationStage =
+        appointmentStatus === "COMPLETED" ? "Completed" : "In Consultation";
+
+      setConsultationData((previous) => ({
+        ...previous,
+        [patient.token]: {
+          ...(previous[patient.token] || DEFAULT_CONSULTATION),
+          diagnosis: data.diagnosis || "",
+          notes: data.notes || "",
+          stage: consultationStage,
+          consultationId: data.consultationId,
+          startedAt: data.startedAt,
+          completedAt: data.completedAt,
+        },
+      }));
+
+      return true;
+    } catch (error) {
+      console.error("Consultation fetch error:", error);
+      showToast(error.message || "Unable to load consultation.");
+      return false;
+    } finally {
+      setConsultationLoading(false);
+    }
+  }
+
+  // Save diagnosis and notes to the backend.
+  async function handleSaveConsultation() {
+    if (!selectedPatient?.id || !doctor?.id) {
+      showToast("Appointment information is missing.");
+      return false;
+    }
+
+    const current = consultationData[selectedToken] || DEFAULT_CONSULTATION;
+
+    if (!current.diagnosis.trim()) {
+      showToast("Please enter a diagnosis.");
+      return false;
+    }
+
+    if (normalizeStatus(selectedPatient.status) !== "IN_CONSULTATION") {
+      showToast("Start the consultation before saving.");
+      return false;
+    }
+
+    setConsultationSaving(true);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/doctors/${doctor.id}/appointments/${selectedPatient.id}/consultation`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            diagnosis: current.diagnosis.trim(),
+            notes: current.notes.trim(),
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Unable to save consultation.");
+      }
+
+      const data = await response.json();
+
+      setConsultationData((previous) => ({
+        ...previous,
+        [selectedToken]: {
+          ...(previous[selectedToken] || DEFAULT_CONSULTATION),
+          diagnosis: data.diagnosis || "",
+          notes: data.notes || "",
+          consultationId: data.consultationId,
+          startedAt: data.startedAt,
+          completedAt: data.completedAt,
+          stage: "In Consultation",
+        },
+      }));
+
+      showToast("Diagnosis and notes saved successfully.");
+      return true;
+    } catch (error) {
+      console.error("Consultation save error:", error);
+      showToast(error.message || "Unable to save consultation.");
+      return false;
+    } finally {
+      setConsultationSaving(false);
+    }
+  }
+
+  // Close notification dropdown when clicking outside.
   useEffect(() => {
     function handleClickOutside(event) {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
@@ -180,16 +394,9 @@ function DoctorDashboard() {
     };
   }, []);
 
-  // Clear pending toast timer when the dashboard unmounts.
   useEffect(() => {
     return () => clearTimeout(toastTimer.current);
   }, []);
-
-  function showToast(message) {
-    setToast(message);
-    clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(null), 2600);
-  }
 
   const selectedPatient = useMemo(() => {
     return patients.find((patient) => patient.token === selectedToken) || null;
@@ -209,24 +416,49 @@ function DoctorDashboard() {
     }));
   }
 
-  function setPatientStatus(token, status) {
-    setPatients((previous) =>
-      previous.map((patient) =>
-        patient.token === token ? { ...patient, status } : patient,
-      ),
-    );
-  }
+  // Open an appointment and optionally start consultation.
+  async function openPatient(token, andStart = false) {
+    const patient = patients.find((item) => item.token === token);
 
-  function openPatient(token, andStart) {
+    if (!patient) {
+      showToast("Appointment not found.");
+      return;
+    }
+
     setSelectedToken(token);
 
-    if (andStart) {
-      updateConsultation(token, { stage: "In Consultation" });
+    let status = normalizeStatus(patient.status);
+
+    if (andStart && status === "DOCTOR_ASSIGNED") {
+      const updated = await handleAppointmentStatusChange(
+        patient.id,
+        "IN_CONSULTATION",
+      );
+
+      if (!updated) {
+        setSelectedToken(null);
+        return;
+      }
+
+      status = normalizeStatus(updated.status);
+    }
+
+    if (status === "IN_CONSULTATION" || status === "COMPLETED") {
+      await fetchConsultation(patient);
+    } else if (status !== "DOCTOR_ASSIGNED") {
+      setSelectedToken(null);
+      showToast("This appointment cannot be opened.");
     }
   }
 
   function closeDrawer() {
     setSelectedToken(null);
+    setMedForm({
+      name: "",
+      dosage: "",
+      duration: "",
+      instructions: "",
+    });
   }
 
   function toggleTest(testLabel) {
@@ -238,14 +470,16 @@ function DoctorDashboard() {
       ? currentConsultation.tests.filter((test) => test !== testLabel)
       : [...currentConsultation.tests, testLabel];
 
-    updateConsultation(selectedToken, { tests: nextTests });
+    updateConsultation(selectedToken, {
+      tests: nextTests,
+    });
   }
 
   function addPrescription() {
     if (!selectedToken) return;
 
     if (!medForm.name.trim() || !medForm.dosage.trim()) {
-      showToast("Please add at least a medicine name and dosage.");
+      showToast("Please add a medicine name and dosage.");
       return;
     }
 
@@ -276,87 +510,81 @@ function DoctorDashboard() {
     });
   }
 
-  function setStage(stage) {
-    if (!selectedToken) return;
-
-    updateConsultation(selectedToken, { stage });
+  // Save diagnosis before completing the appointment.
+  async function setStage(stage) {
+    if (!selectedToken || !selectedPatient) return;
 
     if (stage === "Completed") {
-      // This is only local UI state for now. The real status update will be
-      // sent to Spring Boot when we connect the appointment API.
-      setPatientStatus(selectedToken, "COMPLETED");
-      showToast(
-        `Consultation completed for ${selectedPatient?.name || "patient"}.`,
+      if (normalizeStatus(selectedPatient.status) !== "IN_CONSULTATION") {
+        showToast("Only an active consultation can be completed.");
+        return;
+      }
+
+      const saved = await handleSaveConsultation();
+
+      if (!saved) return;
+
+      const updated = await handleAppointmentStatusChange(
+        selectedPatient.id,
+        "COMPLETED",
       );
 
-      setTimeout(() => closeDrawer(), 500);
+      if (!updated) return;
+
+      updateConsultation(selectedToken, {
+        stage: "Completed",
+      });
+
+      setTimeout(closeDrawer, 500);
       return;
     }
 
-    showToast(
-      `Marked as "${stage}" for ${selectedPatient?.name || "patient"}.`,
-    );
+    updateConsultation(selectedToken, { stage });
+
+    showToast(`Marked as "${stage}" for ${selectedPatient.name}.`);
   }
-
-  const filteredPatients = useMemo(() => {
-    if (!searchTerm.trim()) return patients;
-
-    const query = searchTerm.toLowerCase();
-
-    return patients.filter((patient) => {
-      const name = patient.name?.toLowerCase() || "";
-      const token = patient.token?.toLowerCase() || "";
-      const department = patient.department?.toLowerCase() || "";
-      const category = patient.category?.toLowerCase() || "";
-
-      return (
-        name.includes(query) ||
-        token.includes(query) ||
-        department.includes(query) ||
-        category.includes(query)
-      );
-    });
-  }, [patients, searchTerm]);
 
   const todayDate = getLocalDateString();
 
-  const todayPatients = useMemo(() => {
-    return patients.filter((patient) => patient.date === todayDate);
-  }, [patients, todayDate]);
+  const todayAppointments = useMemo(
+    () => patients.filter((appointment) => appointment.date === todayDate),
+    [patients, todayDate],
+  );
 
-  const todaySchedule = useMemo(() => {
-    return todayPatients.map((appointment) => ({
-      time: appointment.slot || "—",
-      patient: appointment.name || "Unknown patient",
-      type: appointment.category || appointment.department || "Appointment",
-    }));
-  }, [todayPatients]);
+  const todaySchedule = useMemo(
+    () =>
+      todayAppointments.map((appointment) => ({
+        time: appointment.slot || "—",
+        patient: appointment.name || "Unknown patient",
+        type: appointment.department || "Appointment",
+      })),
+    [todayAppointments],
+  );
 
-  // No emergency records are invented. This will start working automatically
-  // if a real priority field is added to appointment/patient data later.
-  const emergencyPatients = useMemo(() => {
-    return patients.filter(
-      (patient) =>
-        String(patient.priority || "").toUpperCase() === "EMERGENCY" &&
-        normalizeStatus(patient.status) !== "COMPLETED",
-    );
-  }, [patients]);
+  const emergencyPatients = useMemo(
+    () =>
+      patients.filter(
+        (patient) =>
+          String(patient.priority || "").toUpperCase() === "EMERGENCY" &&
+          normalizeStatus(patient.status) !== "COMPLETED",
+      ),
+    [patients],
+  );
 
-  const totalToday = todayPatients.length;
+  const totalToday = todayAppointments.length;
 
-  const waitingCount = todayPatients.filter((patient) => {
-    const status = normalizeStatus(patient.status);
+  const waitingCount = todayAppointments.filter(
+    (appointment) => normalizeStatus(appointment.status) === "DOCTOR_ASSIGNED",
+  ).length;
 
-    return status === "WAITING" || status === "DOCTOR_ASSIGNED";
-  }).length;
-
-  const completedCount = todayPatients.filter(
-    (patient) => normalizeStatus(patient.status) === "COMPLETED",
+  const completedCount = todayAppointments.filter(
+    (appointment) => normalizeStatus(appointment.status) === "COMPLETED",
   ).length;
 
   const emergencyCount = emergencyPatients.length;
 
   const hour = new Date().getHours();
+
   const greeting =
     hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
 
@@ -380,16 +608,9 @@ function DoctorDashboard() {
         .toUpperCase()
     : "DR";
 
-  const doctorProfile = doctor
-    ? {
-        ...doctor,
-        initials: doctorInitials,
-      }
-    : null;
+  const doctorProfile = doctor ? { ...doctor, initials: doctorInitials } : null;
 
-  if (!doctorProfile) {
-    return null;
-  }
+  if (!doctorProfile) return null;
 
   return (
     <div className="dd-root">
@@ -428,12 +649,11 @@ function DoctorDashboard() {
         />
 
         <div className="content-grid">
-          <PatientQueue
-            searchTerm={searchTerm}
-            filteredPatients={filteredPatients}
-            PriorityBadge={PriorityBadge}
-            openPatient={openPatient}
-            setSearchTerm={setSearchTerm}
+          <AssignedAppointments
+            appointments={patients}
+            loading={appointmentsLoading}
+            onStatusChange={handleAppointmentStatusChange}
+            onOpenPatient={openPatient}
           />
 
           <SidePanel TODAY_SCHEDULE={todaySchedule} />
@@ -455,6 +675,9 @@ function DoctorDashboard() {
         removePrescription={removePrescription}
         StageTag={StageTag}
         PriorityBadge={PriorityBadge}
+        onSaveConsultation={handleSaveConsultation}
+        consultationLoading={consultationLoading}
+        consultationSaving={consultationSaving}
       />
 
       <Toast toast={toast} />

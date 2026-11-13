@@ -1,38 +1,39 @@
 package com.hms.hmsbackend.controller;
 
-import com.hms.hmsbackend.entity.Doctor;
-import com.hms.hmsbackend.service.DoctorService;
-import jakarta.validation.Valid;
+import com.hms.hmsbackend.entity.Appointment;
+import com.hms.hmsbackend.entity.AppointmentStatus;
+import com.hms.hmsbackend.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/doctors")
+@RequestMapping("/api/doctors")
 @CrossOrigin(origins = "http://localhost:5173")
 public class DoctorController {
 
-    private final DoctorService doctorService;
+    AppointmentService appointmentService;
 
-    public DoctorController(DoctorService doctorService) {
-        this.doctorService = doctorService;
+    public DoctorController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> addDoctor(@Valid @RequestBody Doctor doctor) {
-        try {
-            Doctor savedDoctor = doctorService.addDoctor(doctor);
-            return ResponseEntity.ok(savedDoctor);
-        } catch (RuntimeException e) {
+    @GetMapping("/{doctorId}/appointments")
+    public ResponseEntity<List<Appointment>> getDoctorAppointments(@PathVariable Long doctorId){
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctorId(doctorId));
+    }
+
+    @PutMapping("/{doctorId}/appointments/{appointmentId}/status")
+    public ResponseEntity<?> updateAppointmentStatus(@PathVariable Long doctorId,
+                                                     @PathVariable Long appointmentId,
+                                                     @RequestParam("status") AppointmentStatus appointmentStatus){
+        try{
+            Appointment appointment = appointmentService.updateDoctorAppointmentStatus(doctorId, appointmentId, appointmentStatus);
+            return ResponseEntity.ok(appointment);
+        }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Doctor>> getAllDoctors() {
-        List<Doctor> doctors = doctorService.getAllDoctors();
-        return ResponseEntity.ok(doctors);
     }
 
 }
