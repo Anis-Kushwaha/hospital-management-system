@@ -47,9 +47,9 @@ function PatientDrawer({
               <PriorityBadge priority={selectedPatient.priority} />
               <StageTag
                 stage={
-                  selectedPatient.status === "COMPLETED"
+                  isCompleted
                     ? "Completed"
-                    : selectedPatient.status === "IN_CONSULTATION"
+                    : isInConsultation
                       ? "In Consultation"
                       : selectedPatient.status === "DOCTOR_ASSIGNED"
                         ? "Doctor Assigned"
@@ -174,7 +174,6 @@ function PatientDrawer({
                 <div className="test-grid">
                   {AVAILABLE_TESTS.map((test) => {
                     const Icon = test.icon;
-
                     const active = currentConsultation.tests.includes(
                       test.label,
                     );
@@ -322,7 +321,7 @@ function PatientDrawer({
                 disabled={consultationSaving || consultationLoading}
               >
                 <FiSave />
-                {consultationSaving ? "Saving..." : "Save Diagnosis & Notes"}
+                {consultationSaving ? "Saving..." : "Save Consultation"}
               </button>
 
               <button

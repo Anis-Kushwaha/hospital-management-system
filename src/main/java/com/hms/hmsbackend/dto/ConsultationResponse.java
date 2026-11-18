@@ -1,6 +1,9 @@
 package com.hms.hmsbackend.dto;
 
+import com.hms.hmsbackend.entity.Consultation;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ConsultationResponse {
 
@@ -10,17 +13,18 @@ public class ConsultationResponse {
     private String notes;
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;
+    private List<String> tests;
+    private List<PrescriptionResponse> prescriptions;
 
-    public ConsultationResponse(
-            Long consultationId, Long appointmentId, String diagnosis,
-            String notes, LocalDateTime startedAt, LocalDateTime completedAt
-    ) {
-        this.consultationId = consultationId;
-        this.appointmentId = appointmentId;
-        this.diagnosis = diagnosis;
-        this.notes = notes;
-        this.startedAt = startedAt;
-        this.completedAt = completedAt;
+    public ConsultationResponse(Consultation consultation) {
+        this.consultationId = consultation.getId();
+        this.appointmentId = consultation.getAppointment().getId();
+        this.diagnosis = consultation.getDiagnosis();
+        this.notes = consultation.getNotes();
+        this.startedAt = consultation.getStartedAt();
+        this.completedAt = consultation.getCompletedAt();
+        this.tests = consultation.getTests().stream().map(test -> test.getTestName()).toList();
+        this.prescriptions = consultation.getPrescriptions().stream().map(PrescriptionResponse::new).toList();
     }
 
     public Long getConsultationId() {
@@ -69,5 +73,21 @@ public class ConsultationResponse {
 
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public List<String> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<String> tests) {
+        this.tests = tests;
+    }
+
+    public List<PrescriptionResponse> getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(List<PrescriptionResponse> prescriptions) {
+        this.prescriptions = prescriptions;
     }
 }

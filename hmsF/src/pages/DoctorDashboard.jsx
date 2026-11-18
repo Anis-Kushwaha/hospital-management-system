@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
 import {
   FiActivity,
   FiCpu,
@@ -7,41 +8,62 @@ import {
   FiLayers,
   FiRadio,
 } from "react-icons/fi";
+
 import { useNavigate } from "react-router-dom";
 
 import "../DoctorDashboard.css";
+
 import DoctorNavbar from "../components/Doctor/DoctorNavbar";
+
 import WelcomeSection from "../components/Doctor/WelcomeSection";
+
 import StatsGrid from "../components/Doctor/StatsGrid";
+
 import EmergencySection from "../components/Doctor/EmergencySection";
+
 import SidePanel from "../components/Doctor/SidePanel";
+
 import PatientDrawer from "../components/Doctor/PatientDrawer";
+
 import Toast from "../components/Doctor/Toast";
+
 import AssignedAppointments from "../components/Doctor/AssignedAppointments";
 
 const API_URL = "http://localhost:8080/api";
 
 const AVAILABLE_TESTS = [
   { id: "blood", label: "Blood Test", icon: FiDroplet },
+
   { id: "xray", label: "X-Ray", icon: FiImage },
+
   { id: "mri", label: "MRI", icon: FiCpu },
+
   { id: "ct", label: "CT Scan", icon: FiLayers },
+
   { id: "ecg", label: "ECG", icon: FiActivity },
+
   { id: "ultrasound", label: "Ultrasound", icon: FiRadio },
 ];
 
 const DEFAULT_CONSULTATION = {
   diagnosis: "",
+
   notes: "",
+
   tests: [],
+
   prescriptions: [],
+
   stage: "Pending",
 };
 
 function getLocalDateString() {
   const now = new Date();
+
   const year = now.getFullYear();
+
   const month = String(now.getMonth() + 1).padStart(2, "0");
+
   const day = String(now.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
@@ -50,7 +72,9 @@ function getLocalDateString() {
 function normalizeStatus(status) {
   return String(status || "")
     .trim()
+
     .toUpperCase()
+
     .replace(/\s+/g, "_");
 }
 
@@ -78,6 +102,7 @@ function PriorityBadge({ priority }) {
 
   const normalizedPriority = String(priority)
     .toLowerCase()
+
     .replace(/\s+/g, "-");
 
   return (
@@ -91,7 +116,9 @@ function StageTag({ stage }) {
   return (
     <span
       className={`stage-tag stage-tag--${stage
+
         .toLowerCase()
+
         .replace(/\s+/g, "-")}`}
     >
       {stage}
@@ -108,7 +135,9 @@ function StatCard({ icon: Icon, label, value, sub, tone }) {
 
       <div className="stat-card__body">
         <span className="stat-card__value">{value}</span>
+
         <span className="stat-card__label">{label}</span>
+
         <span className="stat-card__sub">{sub}</span>
       </div>
     </div>
@@ -119,38 +148,49 @@ function DoctorDashboard() {
   const navigate = useNavigate();
 
   const [doctor, setDoctor] = useState(null);
+
   const [isAvailable, setIsAvailable] = useState(true);
+
   const [showNotifications, setShowNotifications] = useState(false);
 
   const [patients, setPatients] = useState([]);
+
   const [appointmentsLoading, setAppointmentsLoading] = useState(true);
 
   const [notifications] = useState([]);
 
   const [selectedToken, setSelectedToken] = useState(null);
+
   const [consultationData, setConsultationData] = useState({});
 
   const [consultationLoading, setConsultationLoading] = useState(false);
+
   const [consultationSaving, setConsultationSaving] = useState(false);
 
   const [medForm, setMedForm] = useState({
     name: "",
+
     dosage: "",
+
     duration: "",
+
     instructions: "",
   });
 
   const [toast, setToast] = useState(null);
 
   const toastTimer = useRef(null);
+
   const notifRef = useRef(null);
 
   // Load logged-in doctor.
+
   useEffect(() => {
     const storedDoctor = localStorage.getItem("doctor");
 
     if (!storedDoctor) {
       navigate("/");
+
       return;
     }
 
@@ -164,7 +204,9 @@ function DoctorDashboard() {
       setDoctor(parsedDoctor);
     } catch (error) {
       console.error("Invalid doctor data:", error);
+
       localStorage.removeItem("doctor");
+
       navigate("/");
     }
   }, [navigate]);
@@ -180,6 +222,7 @@ function DoctorDashboard() {
   }
 
   // Fetch appointments assigned to the logged-in doctor.
+
   useEffect(() => {
     if (!doctor?.id) return;
 
@@ -207,6 +250,7 @@ function DoctorDashboard() {
 
         if (!cancelled) {
           setPatients([]);
+
           showToast("Unable to load assigned appointments.");
         }
       } finally {
@@ -224,21 +268,26 @@ function DoctorDashboard() {
   }, [doctor?.id]);
 
   // Update appointment status through the backend.
+
   async function handleAppointmentStatusChange(appointmentId, newStatus) {
     if (!doctor?.id) {
       showToast("Doctor information is not available.");
+
       return null;
     }
 
     try {
       const response = await fetch(
         `${API_URL}/doctors/${doctor.id}/appointments/${appointmentId}/status?status=${newStatus}`,
+
         { method: "PUT" },
       );
 
       if (!response.ok) {
         const message = await response.text();
+
         showToast(message || "Unable to update appointment status.");
+
         return null;
       }
 
@@ -259,7 +308,9 @@ function DoctorDashboard() {
       return updatedAppointment;
     } catch (error) {
       console.error("Appointment status update error:", error);
+
       showToast("Unable to connect to server.");
+
       return null;
     }
   }
@@ -267,6 +318,7 @@ function DoctorDashboard() {
   // Load the saved consultation from the backend.
 
   // Load the saved consultation from the backend.
+
   async function fetchConsultation(patient) {
     if (!doctor?.id || !patient?.id) return false;
 
@@ -283,9 +335,7 @@ function DoctorDashboard() {
       }
 
       const data = await response.json();
-
       const appointmentStatus = normalizeStatus(patient.status);
-
       const consultationStage =
         appointmentStatus === "COMPLETED" ? "Completed" : "In Consultation";
 
@@ -295,6 +345,16 @@ function DoctorDashboard() {
           ...(previous[patient.token] || DEFAULT_CONSULTATION),
           diagnosis: data.diagnosis || "",
           notes: data.notes || "",
+          tests: Array.isArray(data.tests) ? data.tests : [],
+          prescriptions: Array.isArray(data.prescriptions)
+            ? data.prescriptions.map((prescription) => ({
+                id: prescription.id,
+                name: prescription.medicineName || prescription.name || "",
+                dosage: prescription.dosage || "",
+                duration: prescription.duration || "",
+                instructions: prescription.instructions || "",
+              }))
+            : [],
           stage: consultationStage,
           consultationId: data.consultationId,
           startedAt: data.startedAt,
@@ -312,7 +372,8 @@ function DoctorDashboard() {
     }
   }
 
-  // Save diagnosis and notes to the backend.
+  // Save the complete consultation to the backend.
+
   async function handleSaveConsultation() {
     if (!selectedPatient?.id || !doctor?.id) {
       showToast("Appointment information is missing.");
@@ -344,6 +405,14 @@ function DoctorDashboard() {
           body: JSON.stringify({
             diagnosis: current.diagnosis.trim(),
             notes: current.notes.trim(),
+            tests: current.tests,
+            prescriptions: current.prescriptions.map((prescription) => ({
+              medicineName:
+                prescription.name || prescription.medicineName || "",
+              dosage: prescription.dosage || "",
+              duration: prescription.duration || "",
+              instructions: prescription.instructions || "",
+            })),
           }),
         },
       );
@@ -361,6 +430,16 @@ function DoctorDashboard() {
           ...(previous[selectedToken] || DEFAULT_CONSULTATION),
           diagnosis: data.diagnosis || "",
           notes: data.notes || "",
+          tests: Array.isArray(data.tests) ? data.tests : current.tests,
+          prescriptions: Array.isArray(data.prescriptions)
+            ? data.prescriptions.map((prescription) => ({
+                id: prescription.id,
+                name: prescription.medicineName || prescription.name || "",
+                dosage: prescription.dosage || "",
+                duration: prescription.duration || "",
+                instructions: prescription.instructions || "",
+              }))
+            : current.prescriptions,
           consultationId: data.consultationId,
           startedAt: data.startedAt,
           completedAt: data.completedAt,
@@ -368,7 +447,7 @@ function DoctorDashboard() {
         },
       }));
 
-      showToast("Diagnosis and notes saved successfully.");
+      showToast("Consultation details saved successfully.");
       return true;
     } catch (error) {
       console.error("Consultation save error:", error);
@@ -380,6 +459,7 @@ function DoctorDashboard() {
   }
 
   // Close notification dropdown when clicking outside.
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
@@ -409,14 +489,17 @@ function DoctorDashboard() {
   function updateConsultation(token, patch) {
     setConsultationData((previous) => ({
       ...previous,
+
       [token]: {
         ...(previous[token] || DEFAULT_CONSULTATION),
+
         ...patch,
       },
     }));
   }
 
   // Open an appointment and optionally start consultation.
+
   async function openPatient(token, andStart = false) {
     const patient = patients.find((item) => item.token === token);
 
@@ -427,11 +510,12 @@ function DoctorDashboard() {
 
     setSelectedToken(token);
 
-    let status = normalizeStatus(patient.status);
+    let activePatient = patient;
+    let status = normalizeStatus(activePatient.status);
 
     if (andStart && status === "DOCTOR_ASSIGNED") {
       const updated = await handleAppointmentStatusChange(
-        patient.id,
+        activePatient.id,
         "IN_CONSULTATION",
       );
 
@@ -440,11 +524,12 @@ function DoctorDashboard() {
         return;
       }
 
-      status = normalizeStatus(updated.status);
+      activePatient = { ...activePatient, ...updated };
+      status = normalizeStatus(activePatient.status);
     }
 
     if (status === "IN_CONSULTATION" || status === "COMPLETED") {
-      await fetchConsultation(patient);
+      await fetchConsultation(activePatient);
     } else if (status !== "DOCTOR_ASSIGNED") {
       setSelectedToken(null);
       showToast("This appointment cannot be opened.");
@@ -453,10 +538,14 @@ function DoctorDashboard() {
 
   function closeDrawer() {
     setSelectedToken(null);
+
     setMedForm({
       name: "",
+
       dosage: "",
+
       duration: "",
+
       instructions: "",
     });
   }
@@ -480,11 +569,13 @@ function DoctorDashboard() {
 
     if (!medForm.name.trim() || !medForm.dosage.trim()) {
       showToast("Please add a medicine name and dosage.");
+
       return;
     }
 
     const newPrescription = {
       id: `rx-${Date.now()}`,
+
       ...medForm,
     };
 
@@ -494,8 +585,11 @@ function DoctorDashboard() {
 
     setMedForm({
       name: "",
+
       dosage: "",
+
       duration: "",
+
       instructions: "",
     });
   }
@@ -511,12 +605,14 @@ function DoctorDashboard() {
   }
 
   // Save diagnosis before completing the appointment.
+
   async function setStage(stage) {
     if (!selectedToken || !selectedPatient) return;
 
     if (stage === "Completed") {
       if (normalizeStatus(selectedPatient.status) !== "IN_CONSULTATION") {
         showToast("Only an active consultation can be completed.");
+
         return;
       }
 
@@ -526,6 +622,7 @@ function DoctorDashboard() {
 
       const updated = await handleAppointmentStatusChange(
         selectedPatient.id,
+
         "COMPLETED",
       );
 
@@ -536,6 +633,7 @@ function DoctorDashboard() {
       });
 
       setTimeout(closeDrawer, 500);
+
       return;
     }
 
@@ -548,6 +646,7 @@ function DoctorDashboard() {
 
   const todayAppointments = useMemo(
     () => patients.filter((appointment) => appointment.date === todayDate),
+
     [patients, todayDate],
   );
 
@@ -555,9 +654,12 @@ function DoctorDashboard() {
     () =>
       todayAppointments.map((appointment) => ({
         time: appointment.slot || "—",
+
         patient: appointment.name || "Unknown patient",
+
         type: appointment.department || "Appointment",
       })),
+
     [todayAppointments],
   );
 
@@ -568,6 +670,7 @@ function DoctorDashboard() {
           String(patient.priority || "").toUpperCase() === "EMERGENCY" &&
           normalizeStatus(patient.status) !== "COMPLETED",
       ),
+
     [patients],
   );
 
@@ -590,8 +693,11 @@ function DoctorDashboard() {
 
   const todayLabel = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
+
     day: "numeric",
+
     month: "long",
+
     year: "numeric",
   });
 
@@ -599,12 +705,19 @@ function DoctorDashboard() {
 
   const doctorInitials = doctor?.name
     ? doctor.name
+
         .replace(/^Dr\.?\s*/i, "")
+
         .split(" ")
+
         .filter(Boolean)
+
         .map((word) => word.charAt(0))
+
         .join("")
+
         .slice(0, 2)
+
         .toUpperCase()
     : "DR";
 

@@ -29,18 +29,11 @@ public class ConsultationController {
         Consultation consultation = consultationService.updateConsultation(
                 doctorId,
                 appointmentId,
-                request.getDiagnosis(),
-                request.getNotes()
+                request
         );
-        ConsultationResponse response = new ConsultationResponse(
-                consultation.getId(),
-                consultation.getAppointment().getId(),
-                consultation.getDiagnosis(),
-                consultation.getNotes(),
-                consultation.getStartedAt(),
-                consultation.getCompletedAt()
+        return ResponseEntity.ok(
+                new ConsultationResponse(consultation)
         );
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{doctorId}/appointments/{appointmentId}/consultation")
@@ -50,15 +43,8 @@ public class ConsultationController {
     ) {
         Consultation consultation = consultationService.getDoctorConsultation(doctorId,appointmentId);
 
-        ConsultationResponse response = new ConsultationResponse(
-                consultation.getId(),
-                consultation.getAppointment().getId(),
-                consultation.getDiagnosis(),
-                consultation.getNotes(),
-                consultation.getStartedAt(),
-                consultation.getCompletedAt()
+        return ResponseEntity.ok(
+                new ConsultationResponse(consultation)
         );
-
-        return ResponseEntity.ok(response);
     }
 }

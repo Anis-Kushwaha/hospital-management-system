@@ -4,6 +4,8 @@ import com.hms.hmsbackend.entity.Consultation;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -11,4 +13,5 @@ public interface ConsultationRepository extends CrudRepository<Consultation, Lon
     Optional<Consultation> findByAppointmentId(Long AppointmentId);
 
     boolean existsByAppointmentId(Long AppointmentId);
+    List<Consultation> findByAppointmentIdIn(Collection<Long> appointmentIds);
 }
